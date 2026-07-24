@@ -19,7 +19,6 @@
       "description": "Our finance team needs the invoice for the latest payment. Where can the account owner find it?"
     },
     "modes": ["deterministic", "ai"],
-    "judge_draft": true,
     "expected_outcome": "draft_ready",
     "expected_document": "Billing and Invoice Guide.pdf"
   },

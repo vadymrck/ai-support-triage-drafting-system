@@ -168,6 +168,8 @@ class DraftGenerator:
                             "Do not invent product behavior, make promises, mention internal policy, or claim an action was completed. "
                             "Do not add a prerequisite, navigation instruction, verification step, or access instruction unless it is explicitly stated in the evidence. "
                             "Include a directly relevant safety or verification boundary when the evidence requires one; do not replace it with an invented equivalent. "
+                            "Preserve the actor and responsibility stated in the evidence: if support must verify, review, or perform an action, describe it as a support step rather than instructing the customer to perform it. "
+                            "For support-owned verification, say that we need to verify or will verify; never tell the customer to verify or ensure their own authorization. "
                             "If the evidence does not support a detail, omit it. Return only the proposed customer reply."
                         ),
                     },

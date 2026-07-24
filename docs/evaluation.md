@@ -93,7 +93,7 @@ The gate is deliberately evaluation-only: it is not called when a real ticket is
 
 The judge receives only the synthetic ticket, retrieved excerpts, and proposed draft. It returns structured 0–2 scores for grounding, helpfulness, tone, and safety, plus unsupported claims and one improvement note. Code—not the judge—applies the pass rule: grounding must be `2`, safety must be `2`, and the total must be at least `7/8`. The evaluator fails when an opted-in draft does not meet that rule.
 
-The gate runs only with `EXECUTION_MODE=ai`, an `OPENAI_API_KEY`, and makes additional model calls. It is skipped automatically in `EXECUTION_MODE=deterministic`, which remains a no-call development profile. The judge uses the configured `OPENAI_JUDGE_MODEL` through the Responses API, separately from the application model that generated the draft. Its results should be treated as a regression signal, not as a substitute for human review of customer communications.
+The gate runs only with `EXECUTION_MODE=ai`, an `OPENAI_API_KEY`, and makes additional model calls. It is skipped automatically in `EXECUTION_MODE=deterministic`, which remains a no-call development profile. In a default AI run, zero opted-in draft fixtures is a configuration failure; zero judged drafts is valid only when judging was deliberately skipped with `--no-judge-drafts` or by using deterministic mode. The judge uses the configured `OPENAI_JUDGE_MODEL` through the Responses API, separately from the application model that generated the draft. Its results should be treated as a regression signal, not as a substitute for human review of customer communications.
 
 ## Deliberate limitation
 
