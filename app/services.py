@@ -34,7 +34,10 @@ class TicketAnalyzer:
                             "Classify support tickets. Report observations only; never decide routing. "
                             "Set missing_information=true only when the ticket lacks enough information to classify the issue "
                             "or recommend an initial next step. Do not set it merely because an agent may later need details "
-                            "to complete troubleshooting, such as identity-provider configuration."
+                            "to complete troubleshooting, such as identity-provider configuration. A request for an administrator's first "
+                            "SSO or identity-configuration checks is sufficiently understood for initial guidance, even when later diagnosis needs more details. "
+                            "Set urgency=critical only for a confirmed service outage, an explicit production-blocking incident, "
+                            "or a security emergency. Do not infer critical urgency solely because an access issue affects multiple users."
                         ),
                     },
                     {"role": "user", "content": f"Subject: {ticket.subject}\n\nTicket: {ticket.description}"},
