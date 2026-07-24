@@ -8,7 +8,7 @@ All tickets and knowledge-base documents used by this demo are synthetic.
 
 Support teams repeatedly interpret incoming tickets, locate relevant internal guidance, decide whether a request is safe to handle normally, and draft similar replies. This project demonstrates a bounded, auditable way to automate that first layer without automating customer communication.
 
-## Scope agreed for version 1
+## Version 1 scope
 
 - Receive HubSpot ticket events through a direct webhook integration.
 - Use a Python/FastAPI service as the application boundary and workflow orchestrator.

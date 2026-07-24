@@ -35,7 +35,7 @@ An internal HubSpot note and persisted audit record containing:
 - Using n8n as the core orchestration layer
 - Claiming measured time savings before a real deployment
 
-## Evidence to produce
+## Evidence included
 
 - Synthetic HubSpot ticket scenarios for all three final outcomes
 - Synthetic PDF knowledge base with page-level citations

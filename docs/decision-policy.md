@@ -44,4 +44,4 @@ The number is not a universal quality grade and is not directly comparable acros
 
 ## Technical exception path
 
-Processing failures such as an unavailable model provider, database error, or HubSpot API failure are operational errors rather than business outcomes. They will be logged and retried or surfaced for investigation; they must never create a public response.
+Processing failures such as an unavailable model provider, database error, or HubSpot API failure are operational errors rather than business outcomes. They are logged and surfaced for investigation; they must never create a public response.
