@@ -16,6 +16,16 @@ The project evaluates the actual workflow rather than relying on a visually conv
 
 Each case defines an expected business outcome and, where applicable, the expected PDF document.
 
+## Execution profiles
+
+Each fixture declares which profiles can run it through a `modes` array:
+
+```json
+"modes": ["deterministic", "ai"]
+```
+
+Use both profiles for business-critical policy behavior, such as privacy, payment disputes, and customer escalation. Use `"modes": ["ai"]` for semantic-paraphrase retrieval or generated-draft cases that the deterministic keyword fallback should not be expected to solve. The evaluator skips fixtures that do not apply to the active `EXECUTION_MODE`.
+
 ## Metrics
 
 | Metric | Definition | Initial use |

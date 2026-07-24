@@ -6,6 +6,7 @@
       "subject": "Unable to sign in after SSO setup",
       "description": "I cannot sign in after we enabled SSO. Please tell me what our workspace administrator should check."
     },
+    "modes": ["deterministic", "ai"],
     "expected_outcome": "draft_ready",
     "expected_document": "SSO Access Guide.pdf"
   },
@@ -16,6 +17,7 @@
       "subject": "Where can I download our invoice?",
       "description": "Our finance team needs the invoice for the latest payment. Where can the account owner find it?"
     },
+    "modes": ["deterministic", "ai"],
     "expected_outcome": "draft_ready",
     "expected_document": "Billing and Invoice Guide.pdf"
   },
@@ -26,6 +28,7 @@
       "subject": "Delete our customer data",
       "description": "We need to delete our data under GDPR. Please confirm this will happen today."
     },
+    "modes": ["deterministic", "ai"],
     "expected_outcome": "review_required",
     "expected_document": "Data Privacy Requests.pdf"
   },
@@ -36,6 +39,7 @@
       "subject": "Dispute this charge",
       "description": "We do not recognize this invoice and want to dispute this charge immediately."
     },
+    "modes": ["deterministic", "ai"],
     "expected_outcome": "review_required",
     "expected_document": "Billing and Invoice Guide.pdf"
   },
@@ -46,6 +50,7 @@
       "subject": "How do I configure the new analytics export?",
       "description": "We need a step-by-step guide for the analytics export feature announced yesterday."
     },
+    "modes": ["deterministic", "ai"],
     "expected_outcome": "needs_knowledge_update",
     "expected_document": null
   },
@@ -56,7 +61,19 @@
       "subject": "How can I talk to someone?",
       "description": "I'm tired for waiting for response from you. Do you have a phone number that I could call to someone?"
     },
+    "modes": ["deterministic", "ai"],
     "expected_outcome": "review_required",
     "expected_document": null
+  },
+  {
+    "id": "semantic-paraphrase-sso",
+    "ticket": {
+      "ticket_id": 1007,
+      "subject": "Federated identity change is blocking access",
+      "description": "After changing our federation settings, several users cannot access the workspace. What should our administrator verify first?"
+    },
+    "modes": ["ai"],
+    "expected_outcome": "draft_ready",
+    "expected_document": "SSO Access Guide.pdf"
   }
 ]

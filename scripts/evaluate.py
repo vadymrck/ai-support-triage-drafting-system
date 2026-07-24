@@ -14,14 +14,19 @@ def main() -> None:
     parser.add_argument("--case", dest="case_ids", action="append", help="Run one named case; repeat the option to run several cases.")
     parser.add_argument("--json", action="store_true", help="Print the complete evaluation report as JSON.")
     args = parser.parse_args()
-    cases = json.loads(args.dataset.read_text())
+    all_cases = json.loads(args.dataset.read_text())
+    execution_mode = get_settings().execution_mode
     if args.case_ids:
         requested_ids = set(args.case_ids)
-        cases = [case for case in cases if case["id"] in requested_ids]
-        found_ids = {case["id"] for case in cases}
+        found_ids = {case["id"] for case in all_cases}
         missing_ids = requested_ids - found_ids
         if missing_ids:
             raise SystemExit(f"Unknown evaluation case ID(s): {', '.join(sorted(missing_ids))}")
+        all_cases = [case for case in all_cases if case["id"] in requested_ids]
+    cases = [case for case in all_cases if execution_mode in case.get("modes", ["deterministic", "ai"])]
+    if not cases:
+        requested = ", ".join(args.case_ids) if args.case_ids else "the dataset"
+        raise SystemExit(f"No evaluation cases from {requested} apply to EXECUTION_MODE={execution_mode}.")
     initialize_database()
     outcome_matches = 0
     evidence_matches = 0
@@ -48,11 +53,11 @@ def main() -> None:
             })
     total = len(cases)
     passed = outcome_matches == total and evidence_matches == total
-    report = {"status": "passed" if passed else "failed", "total_cases": total, "routing_accuracy": round(outcome_matches / total, 3), "expected_document_recall": round(evidence_matches / total, 3), "cases": rows}
+    report = {"status": "passed" if passed else "failed", "execution_mode": execution_mode, "total_cases": total, "routing_accuracy": round(outcome_matches / total, 3), "expected_document_recall": round(evidence_matches / total, 3), "cases": rows}
     if args.json:
         print(json.dumps(report, indent=2))
     else:
-        print(f"{'PASS' if passed else 'FAIL'}: {outcome_matches}/{total} routing outcomes and {evidence_matches}/{total} expected-document checks passed.")
+        print(f"{'PASS' if passed else 'FAIL'} [{execution_mode}]: {outcome_matches}/{total} routing outcomes and {evidence_matches}/{total} expected-document checks passed.")
         for row in rows:
             marker = "PASS" if row["outcome_match"] and row["evidence_match"] else "FAIL"
             print(f"  {marker}  {row['id']} -> {row['actual_outcome']} (expected {row['expected_outcome']})")
