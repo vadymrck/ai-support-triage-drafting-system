@@ -69,7 +69,7 @@ AI-mode evaluations include an evaluation-only LLM draft-quality judge by defaul
 
 ## Continuous integration
 
-After this repository is on GitHub, the [AI quality workflow](.github/workflows/ai-quality.yml) runs on every push to `main`, including merged pull requests. It starts fresh Docker services, runs unit tests, ingests the shipped PDFs with AI embeddings, and runs the full AI evaluation (including the default draft-quality gate).
+The [AI quality workflow](.github/workflows/ai-quality.yml) runs on every push to `main`, including merged pull requests. It starts fresh Docker services, runs unit tests, ingests the shipped PDFs with AI embeddings, and runs the full AI evaluation (including the default draft-quality gate). Local commits and pushes have no Git hook; run `docker compose exec api pytest -q` manually as the fast local check.
 
 Add `OPENAI_API_KEY` as a repository Actions secret before enabling the workflow. It is intentionally not triggered for open pull requests, so API-backed evaluation runs only on trusted `main` code.
 

@@ -39,7 +39,7 @@ Use both profiles for business-critical policy behavior, such as privacy, paymen
 
 ## Running the evaluation
 
-After generating and ingesting the synthetic PDFs:
+After ingesting the synthetic PDFs:
 
 ```zsh
 docker compose exec api python scripts/evaluate.py
@@ -56,6 +56,22 @@ docker compose exec api python scripts/evaluate.py --case privacy-review
 ```
 
 Repeat `--case` to run a small subset. Without it, the full regression dataset runs.
+
+## Test execution lifecycle
+
+There is no local pre-commit or pre-push hook. Before a local commit or push, run the fast unit suite manually:
+
+```zsh
+docker compose exec api pytest -q
+```
+
+The GitHub Actions workflow runs automatically only after a push to `main`, including a merged pull request. It uses a new Docker database for every run and executes this order:
+
+1. `pytest` unit tests.
+2. PDF ingestion in `EXECUTION_MODE=ai`, creating fresh embeddings in pgvector.
+3. The default AI evaluation, including every applicable routing/retrieval fixture and opted-in draft-quality judge check.
+
+The workflow needs the repository Actions secret `OPENAI_API_KEY`. It is also available as a manual GitHub Actions run. A regular push to another branch or an open pull request does not trigger it.
 
 ## Optional LLM-as-a-judge draft-quality gate
 

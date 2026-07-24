@@ -25,9 +25,15 @@ The standard setup uses `gpt-5-mini` for ticket analysis and drafting, and `gpt-
 
 ## GitHub Actions evaluation
 
-`.github/workflows/ai-quality.yml` runs on a push to `main` (including a merged pull request) or through a manual GitHub Actions run. Each run starts a fresh Docker database, ingests the repository PDFs with AI embeddings, then runs unit tests and the default full AI evaluation.
+`.github/workflows/ai-quality.yml` runs on a push to `main` (including a merged pull request) or through a manual GitHub Actions run. Each run starts a fresh Docker database, runs unit tests first, ingests the repository PDFs with AI embeddings, then runs the default full AI evaluation.
 
 Before pushing this project to GitHub, create a repository Actions secret named `OPENAI_API_KEY`. The workflow does not run on open pull requests, keeping API-backed evaluation limited to trusted main-branch code.
+
+Local commits and pushes do not run tests automatically because this project intentionally has no Git hook. Run the fast local check manually before committing or pushing:
+
+```zsh
+docker compose exec api pytest -q
+```
 
 5. Ingest the synthetic PDFs included with the repository:
 
