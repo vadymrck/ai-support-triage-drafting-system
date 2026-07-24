@@ -59,11 +59,13 @@ Repeat `--case` to run a small subset. Without it, the full regression dataset r
 
 ## Test execution lifecycle
 
-There is no local pre-commit or pre-push hook. Before a local commit or push, run the fast unit suite manually:
+Version-controlled Git hooks run the fast unit suite before every local commit and push. Enable them once after cloning:
 
 ```zsh
-docker compose exec api pytest -q
+./scripts/install_git_hooks.sh
 ```
+
+The hooks run `docker compose exec -T api pytest -q` and require the Docker API service to be running.
 
 The GitHub Actions workflow runs automatically only after a push to `main`, including a merged pull request. It uses a new Docker database for every run and executes this order:
 

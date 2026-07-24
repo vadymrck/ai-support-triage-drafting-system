@@ -29,11 +29,13 @@ The standard setup uses `gpt-5-mini` for ticket analysis and drafting, and `gpt-
 
 Before pushing this project to GitHub, create a repository Actions secret named `OPENAI_API_KEY`. The workflow does not run on open pull requests, keeping API-backed evaluation limited to trusted main-branch code.
 
-Local commits and pushes do not run tests automatically because this project intentionally has no Git hook. Run the fast local check manually before committing or pushing:
+Version-controlled Git hooks run the fast unit suite before every local commit and push. Enable them once after cloning:
 
 ```zsh
-docker compose exec api pytest -q
+./scripts/install_git_hooks.sh
 ```
+
+The hooks run `docker compose exec -T api pytest -q`, so the Docker API service must be running. You can still run the same command directly whenever you want a fast local check.
 
 5. Ingest the synthetic PDFs included with the repository:
 
