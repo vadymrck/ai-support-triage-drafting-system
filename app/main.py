@@ -1,5 +1,7 @@
 import json
 import logging
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Request, status
 from sqlalchemy import select
@@ -14,12 +16,18 @@ from app.services import process_ticket
 
 logger = logging.getLogger("uvicorn.error")
 
-app = FastAPI(title="AI Support Triage & Drafting System", version="0.1.0")
 
-
-@app.on_event("startup")
-def startup() -> None:
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     initialize_database()
+    yield
+
+
+app = FastAPI(
+    title="AI Support Triage & Drafting System",
+    version="0.1.0",
+    lifespan=lifespan,
+)
 
 
 @app.get("/health")

@@ -17,6 +17,12 @@
 
 4. The default `EXECUTION_MODE=deterministic` keeps policy and API development runnable without an LLM credential. Add `OPENAI_API_KEY` and set `EXECUTION_MODE=ai` when ready to use real structured analysis, embeddings, and grounded draft generation.
 
+## Runtime requirements
+
+- **Core deterministic demo:** no external credentials required.
+- **Full AI/RAG demo and AI evaluation:** `OPENAI_API_KEY`.
+- **Optional live HubSpot integration:** `OPENAI_API_KEY`, a HubSpot static access token and client secret, plus a public HTTPS webhook URL (such as an ngrok URL) for manual live verification.
+
 ## Model configuration
 
 `OPENAI_MODEL` and `OPENAI_JUDGE_MODEL` are runtime configuration: values in `.env` (or deployment environment variables) override the safe fallback defaults in `app/config.py`. The project does not place model names in individual service calls.
@@ -103,3 +109,9 @@ HubSpot is used only to validate the real integration and capture portfolio evid
    Confirm its decision record locally, then set `HUBSPOT_NOTE_SYNC_ENABLED=true` and repeat with a new ticket to verify the internal note.
 
 The HubSpot adapter reads ticket details and writes internal notes only. It contains no code path for sending a customer message or publishing a public reply.
+
+## HubSpot test levels
+
+The normal pytest suite includes a local integration test for the signed HubSpot webhook endpoint. It uses a real FastAPI request and background-task scheduling, while mocking HubSpot's HTTP client and the AI-processing boundary. It needs no HubSpot account, ngrok tunnel, credentials, or network access.
+
+The live HubSpot → ngrok → local API → AI → HubSpot-note verification is intentionally manual. It requires the optional HubSpot settings above and is meant for portfolio demonstration, not GitHub Actions.
