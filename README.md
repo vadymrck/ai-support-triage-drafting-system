@@ -48,11 +48,11 @@ FastAPI service
 
 The FastAPI application owns integration, retrieval, decisioning, and audit persistence. The LLM reports validated observations; it does not determine the final outcome. A pure Python policy module makes the final routing decision and can be tested independently.
 
-## Planned stack
+## Stack
 
 - Python 3.12, FastAPI, Pydantic v2
 - PostgreSQL + pgvector
-- SQLAlchemy and Alembic
+- SQLAlchemy with direct schema initialization for this demo
 - OpenAI API for embeddings and structured output generation
 - PDF parsing with page-level source metadata
 - HubSpot Tickets API, Notes API, and webhooks
