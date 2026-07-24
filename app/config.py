@@ -9,7 +9,10 @@ class Settings(BaseSettings):
 
     database_url: str = "postgresql+psycopg://support:support@db:5432/support_triage"
     openai_api_key: str | None = None
-    openai_model: str = "gpt-4o-mini"
+    # Environment variables are the runtime source of truth. These values make a
+    # fresh local setup usable before an explicit override is supplied.
+    openai_model: str = "gpt-5-mini"
+    openai_judge_model: str = "gpt-5.6-terra"
     openai_embedding_model: str = "text-embedding-3-small"
     execution_mode: Literal["deterministic", "ai"] = "deterministic"
     zendesk_subdomain: str | None = None

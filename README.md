@@ -65,6 +65,8 @@ The application, database, PDF ingestion, tests, and evaluation suite will run l
 
 `EXECUTION_MODE=deterministic` uses local heuristics, lexical retrieval, and a template draft without OpenAI calls. `EXECUTION_MODE=ai` uses OpenAI for structured analysis, embeddings, and grounded draft generation. Both modes use the same deterministic routing policy.
 
+AI-mode evaluations include an evaluation-only LLM draft-quality judge by default. Use `docker compose exec api python scripts/evaluate.py --no-judge-drafts` for the faster routing-and-retrieval-only run. See the [evaluation plan](docs/evaluation.md) for the rubric and deterministic pass gate.
+
 The published repository will include synthetic PDFs and ticket fixtures, `.env.example`, Docker setup, migrations, automated tests, an evaluation dataset, and Zendesk configuration instructions. It will not include secrets, customer data, or automatic customer-reply behavior.
 
 ## Documentation

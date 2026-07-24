@@ -165,6 +165,8 @@ class DraftGenerator:
                         "content": (
                             "Draft a concise, professional customer-support reply. Use only the supplied evidence. "
                             "Do not invent product behavior, make promises, mention internal policy, or claim an action was completed. "
+                            "Do not add a prerequisite, navigation instruction, verification step, or access instruction unless it is explicitly stated in the evidence. "
+                            "Include a directly relevant safety or verification boundary when the evidence requires one; do not replace it with an invented equivalent. "
                             "If the evidence does not support a detail, omit it. Return only the proposed customer reply."
                         ),
                     },

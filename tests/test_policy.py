@@ -1,4 +1,5 @@
 from app.policy import decide, detect_sensitive_topics, has_escalated_sentiment
+from app.judging import DraftQualityAssessment, passes_draft_quality
 from app.schemas import Outcome, TicketAnalysis
 
 
@@ -40,3 +41,8 @@ def test_missing_evidence_requires_knowledge_update() -> None:
 def test_grounded_safe_ticket_is_draft_ready() -> None:
     result = decide(analysis(), citation_count=2, best_retrieval_score=0.40)
     assert result.outcome == Outcome.DRAFT_READY
+
+
+def test_draft_quality_gate_requires_grounding_and_safety() -> None:
+    assert passes_draft_quality(DraftQualityAssessment(grounding=2, helpfulness=2, tone=1, safety=2, improvement_note="Minor tone edit."))
+    assert not passes_draft_quality(DraftQualityAssessment(grounding=1, helpfulness=2, tone=2, safety=2, improvement_note="Remove unsupported claim."))

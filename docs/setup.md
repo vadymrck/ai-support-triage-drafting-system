@@ -17,6 +17,12 @@
 
 4. The default `EXECUTION_MODE=deterministic` keeps policy and API development runnable without an LLM credential. Add `OPENAI_API_KEY` and set `EXECUTION_MODE=ai` when ready to use real structured analysis, embeddings, and grounded draft generation.
 
+## Model configuration
+
+`OPENAI_MODEL` and `OPENAI_JUDGE_MODEL` are runtime configuration: values in `.env` (or deployment environment variables) override the safe fallback defaults in `app/config.py`. The project does not place model names in individual service calls.
+
+The standard setup uses `gpt-5-mini` for ticket analysis and drafting, and `gpt-5.6-terra` only for the optional, asynchronous draft-quality judge. This intentionally separates generation from evaluation. `text-embedding-3-small` remains the embedding model. For a new environment, copy `.env.example` to `.env` and edit the model variables there only when an explicit override is required.
+
 5. Ingest the synthetic PDFs included with the repository:
 
    ```zsh

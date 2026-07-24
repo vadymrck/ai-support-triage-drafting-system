@@ -41,5 +41,5 @@ A private Zendesk agent note and persisted audit record containing:
 - Synthetic PDF knowledge base with page-level citations
 - Unit tests for policy rules and validation
 - Integration tests for ticket processing and audit records
-- Evaluation fixtures measuring routing accuracy, retrieval Recall@k, and citation grounding
+- Evaluation fixtures measuring routing accuracy, retrieval Recall@k, and optional LLM-as-a-judge draft quality with a deterministic pass gate
 - Screenshots and a short walkthrough only after the end-to-end flow works
