@@ -67,6 +67,12 @@ The application, database, PDF ingestion, tests, and evaluation suite will run l
 
 AI-mode evaluations include an evaluation-only LLM draft-quality judge by default. Use `docker compose exec api python scripts/evaluate.py --no-judge-drafts` for the faster routing-and-retrieval-only run. See the [evaluation plan](docs/evaluation.md) for the rubric and deterministic pass gate.
 
+## Continuous integration
+
+After this repository is on GitHub, the [AI quality workflow](.github/workflows/ai-quality.yml) runs on every push to `main`, including merged pull requests. It starts fresh Docker services, runs unit tests, ingests the shipped PDFs with AI embeddings, and runs the full AI evaluation (including the default draft-quality gate).
+
+Add `OPENAI_API_KEY` as a repository Actions secret before enabling the workflow. It is intentionally not triggered for open pull requests, so API-backed evaluation runs only on trusted `main` code.
+
 The published repository will include synthetic PDFs and ticket fixtures, `.env.example`, Docker setup, migrations, automated tests, an evaluation dataset, and Zendesk configuration instructions. It will not include secrets, customer data, or automatic customer-reply behavior.
 
 ## Documentation

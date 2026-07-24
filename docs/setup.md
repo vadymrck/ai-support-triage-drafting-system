@@ -23,6 +23,12 @@
 
 The standard setup uses `gpt-5-mini` for ticket analysis and drafting, and `gpt-5.6-terra` only for the optional, asynchronous draft-quality judge. This intentionally separates generation from evaluation. `text-embedding-3-small` remains the embedding model. For a new environment, copy `.env.example` to `.env` and edit the model variables there only when an explicit override is required.
 
+## GitHub Actions evaluation
+
+`.github/workflows/ai-quality.yml` runs on a push to `main` (including a merged pull request) or through a manual GitHub Actions run. Each run starts a fresh Docker database, ingests the repository PDFs with AI embeddings, then runs unit tests and the default full AI evaluation.
+
+Before pushing this project to GitHub, create a repository Actions secret named `OPENAI_API_KEY`. The workflow does not run on open pull requests, keeping API-backed evaluation limited to trusted main-branch code.
+
 5. Ingest the synthetic PDFs included with the repository:
 
    ```zsh

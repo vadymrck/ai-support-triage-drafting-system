@@ -1,0 +1,46 @@
+name: AI quality evaluation
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Prepare configuration
+        run: |
+          test -n "$OPENAI_API_KEY"
+          cp .env.example .env
+          echo "OPENAI_API_KEY=$OPENAI_API_KEY" >> .env
+
+      - name: Start isolated services
+        run: docker compose up --build --detach
+
+      - name: Run unit tests
+        run: docker compose exec -T api pytest -q
+
+      - name: Ingest knowledge base with AI embeddings
+        run: docker compose exec -T -e EXECUTION_MODE=ai api python scripts/ingest_pdfs.py data/knowledge-base --replace
+
+      - name: Run AI workflow and draft-quality evaluation
+        run: docker compose exec -T -e EXECUTION_MODE=ai api python scripts/evaluate.py
+
+      - name: Show service logs on failure
+        if: failure()
+        run: docker compose logs --no-color
+
+      - name: Stop isolated services
+        if: always()
+        run: docker compose down --volumes
