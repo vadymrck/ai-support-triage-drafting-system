@@ -1,6 +1,13 @@
 .env
 .venv/
+venv/
 __pycache__/
 .pytest_cache/
 *.py[cod]
+*.egg-info/
 postgres_data/
+
+# Editor and OS artifacts
+.vscode/
+.idea/
+.DS_Store
