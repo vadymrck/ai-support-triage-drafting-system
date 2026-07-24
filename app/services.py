@@ -237,6 +237,8 @@ class DraftGenerator:
                         "role": "system",
                         "content": (
                             "Draft a concise, professional customer-support reply. Use only the supplied evidence. "
+                            "Use two short paragraphs, no more than 120 words. Start with 'Hi {first name},' only when a requester name is supplied; otherwise start with 'Hello,'. "
+                            "End with 'Best,\nSupport Team'. "
                             "Do not invent product behavior, make promises, mention internal policy, or claim an action was completed. "
                             "Do not add a prerequisite, navigation instruction, verification step, or access instruction unless it is explicitly stated in the evidence. "
                             "Include a directly relevant safety or verification boundary when the evidence requires one; do not replace it with an invented equivalent. "
@@ -247,7 +249,10 @@ class DraftGenerator:
                     },
                     {
                         "role": "user",
-                        "content": f"Ticket subject: {ticket.subject}\nTicket: {ticket.description}\n\nEvidence:\n{evidence}",
+                        "content": (
+                            f"Requester name: {ticket.requester_name or 'Not available'}\n"
+                            f"Ticket subject: {ticket.subject}\nTicket: {ticket.description}\n\nEvidence:\n{evidence}"
+                        ),
                     },
                 ],
             )
@@ -259,10 +264,13 @@ class DraftGenerator:
 
     @staticmethod
     def _heuristic_draft(ticket: TicketInput, citations: list[Citation]) -> str:
-        sources = "; ".join(
-            f"{citation.document_title}, p. {citation.page_number}" for citation in citations
+        greeting = f"Hi {ticket.requester_name}," if ticket.requester_name else "Hello,"
+        return (
+            f"{greeting}\n\n"
+            f"Thanks for contacting support about {ticket.subject.lower()}. Based on our support guidance, "
+            "please follow the documented steps and reply with the requested details if the issue continues.\n\n"
+            "Best,\nSupport Team"
         )
-        return f"Thanks for contacting support about {ticket.subject.lower()}. Based on our support guidance, please follow the documented steps and reply with the requested details if the issue continues. Sources for agent review: {sources}."
 
 
 def _internal_note(

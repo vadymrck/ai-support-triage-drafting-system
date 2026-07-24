@@ -1,0 +1,19 @@
+{
+  "uid": "ai_support_triage_config_webhooks",
+  "type": "webhooks",
+  "config": {
+    "settings": {
+      "targetUrl": "https://example.com/v1/webhooks/hubspot",
+      "maxConcurrentRequests": 10
+    },
+    "subscriptions": {
+      "crmObjects": [
+        {
+          "subscriptionType": "object.creation",
+          "objectType": "ticket",
+          "active": false
+        }
+      ]
+    }
+  }
+}

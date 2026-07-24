@@ -2,7 +2,7 @@
 
 ## Objective
 
-Build a small, credible support-assist application that turns an incoming Zendesk ticket into an auditable support package: structured ticket context, evidence from a PDF knowledge base, and either a human-reviewable draft or a clear escalation path.
+Build a small, credible support-assist application that turns an incoming HubSpot ticket into an auditable support package: structured ticket context, evidence from a PDF knowledge base, and either a human-reviewable draft or a clear escalation path.
 
 ## Business problem
 
@@ -10,13 +10,13 @@ Support teams spend time repeatedly reading unstructured tickets, determining th
 
 ## Core input
 
-A Zendesk ticket event and its full ticket details, such as:
+A HubSpot ticket event and its full ticket details, such as:
 
 > “I cannot sign in after our company enabled SSO this morning. Our entire finance team is blocked. Can you reset the setup?”
 
 ## Core output
 
-A private Zendesk agent note and persisted audit record containing:
+An internal HubSpot note and persisted audit record containing:
 
 - ticket classification, urgency, sentiment, and required action
 - extracted policy-relevant signals and model confidence
@@ -29,7 +29,7 @@ A private Zendesk agent note and persisted audit record containing:
 ## Non-goals
 
 - Automatically sending public customer replies
-- Replacing Zendesk or building a ticketing user interface
+- Replacing HubSpot or building a ticketing user interface
 - Building a general-purpose chatbot or autonomous agent
 - Using real customer tickets or proprietary support documentation
 - Using n8n as the core orchestration layer
@@ -37,7 +37,7 @@ A private Zendesk agent note and persisted audit record containing:
 
 ## Evidence to produce
 
-- Synthetic Zendesk ticket scenarios for all three final outcomes
+- Synthetic HubSpot ticket scenarios for all three final outcomes
 - Synthetic PDF knowledge base with page-level citations
 - Unit tests for policy rules and validation
 - Integration tests for ticket processing and audit records

@@ -1,4 +1,4 @@
-# Local Setup and Zendesk Verification
+# Local Setup and HubSpot Verification
 
 ## Local runtime
 
@@ -62,24 +62,44 @@ curl -X POST http://localhost:8000/v1/tickets/process \
 
 The endpoint returns the complete support package. It never sends a customer-facing message.
 
-## Zendesk verification
+## HubSpot verification
 
-Zendesk is used only to validate the real integration and capture portfolio evidence. A trial account is sufficient.
+HubSpot is used only to validate the real integration and capture portfolio evidence. Use a dedicated developer test account, never a real support portal.
 
-1. Set `ZENDESK_SUBDOMAIN`, `ZENDESK_EMAIL`, `ZENDESK_API_TOKEN`, and `ZENDESK_WEBHOOK_SIGNING_SECRET` in `.env`.
-2. Start an HTTPS tunnel to the local API, for example:
+1. Validate and upload the version-controlled [HubSpot configuration app](../hubspot-app/) from the main developer account, then install it into the `AI Support Triage Demo` developer test account. It requests the ticket and note-write scopes and ships with an inactive ticket-created subscription. Keep its static access token and client secret local only.
+2. Set these values in `.env`:
+
+   ```dotenv
+   HUBSPOT_PRIVATE_APP_ACCESS_TOKEN=...
+   HUBSPOT_PRIVATE_APP_CLIENT_SECRET=...
+   HUBSPOT_WEBHOOK_BASE_URL=https://YOUR-NGROK-DOMAIN
+   HUBSPOT_NOTE_SYNC_ENABLED=false
+   ```
+
+   Keep note sync disabled for the first request. This permits a live read-and-decision check without writing to HubSpot.
+
+3. Start an HTTPS tunnel to the local API, for example:
 
    ```zsh
    ngrok http 8000
    ```
 
-3. Configure Zendesk to POST ticket events to:
+4. Configure the private app's webhook target URL as:
 
    ```text
-   https://YOUR-NGROK-DOMAIN/v1/webhooks/zendesk
+   https://YOUR-NGROK-DOMAIN/v1/webhooks/hubspot
    ```
 
-4. Enable Zendesk webhook signing. The service validates `X-Zendesk-Webhook-Signature` and `X-Zendesk-Webhook-Signature-Timestamp`, rejects stale requests, and deduplicates by Zendesk invocation ID.
-5. Set `ZENDESK_NOTE_SYNC_ENABLED=true` only after confirming that test tickets and private notes are configured correctly.
+5. Subscribe to the HubSpot ticket creation event. Optionally add the ticket-property-change event later, after filtering the property to avoid reprocessing every edit.
+6. The service validates `X-HubSpot-Signature-V3` and `X-HubSpot-Request-Timestamp`, rejects stale requests, parses HubSpot's batched event payload, and deduplicates by HubSpot `eventId`.
+7. Create one synthetic ticket in the test account. You can use the HubSpot UI, or the included helper (it reads the local token and never prints it):
 
-The Zendesk adapter only reads ticket details and writes private ticket comments. It contains no code path for publishing a public reply.
+   ```zsh
+   docker compose exec api python scripts/create_hubspot_demo_ticket.py \
+     --subject "Cannot access SSO" \
+     --description "I cannot sign in through SSO. Please help me regain access."
+   ```
+
+   Confirm its decision record locally, then set `HUBSPOT_NOTE_SYNC_ENABLED=true` and repeat with a new ticket to verify the internal note.
+
+The HubSpot adapter reads ticket details and writes internal notes only. It contains no code path for sending a customer message or publishing a public reply.

@@ -1,8 +1,8 @@
 # AI Support Triage & Drafting System
 
-> A human-approved support workflow that classifies Zendesk tickets, retrieves grounded answers from PDF knowledge, and prepares internal triage context or a suggested response.
+> A human-approved support workflow that classifies HubSpot tickets, retrieves grounded answers from PDF knowledge, and prepares internal triage context or a suggested response.
 
-**Portfolio project — planned.** All future tickets, knowledge-base documents, and Zendesk data will be synthetic.
+All tickets and knowledge-base documents used by this demo are synthetic.
 
 ## Why this exists
 
@@ -10,19 +10,19 @@ Support teams repeatedly interpret incoming tickets, locate relevant internal gu
 
 ## Scope agreed for version 1
 
-- Receive Zendesk ticket events through a direct webhook integration.
+- Receive HubSpot ticket events through a direct webhook integration.
 - Use a Python/FastAPI service as the application boundary and workflow orchestrator.
 - Ingest synthetic PDF knowledge-base documents into PostgreSQL with pgvector.
 - Use LLM structured outputs to classify tickets and extract decision-relevant signals.
 - Retrieve relevant PDF passages and generate source-grounded support context.
 - Apply deterministic Python policy rules to select the final outcome.
-- Write the resulting support package to a private Zendesk agent note.
+- Write the resulting support package to an internal HubSpot note associated with the ticket.
 - Keep every customer reply under human control; the system never posts a public reply.
 - Persist a decision trace for auditability and evaluation.
 
 ## Final outcomes
 
-| Outcome | Meaning | Zendesk result |
+| Outcome | Meaning | HubSpot result |
 | --- | --- | --- |
 | `draft_ready` | The request is understood, permitted by policy, and sufficiently grounded in retrieved documentation. | Private note with an internal summary, cited sources, and a suggested reply for an agent to review and send manually. |
 | `review_required` | The request is sensitive, urgent, ambiguous, low-confidence, or otherwise restricted by policy. | Private note with an internal triage brief, escalation reason, and recommended next action. No customer-facing draft. |
@@ -31,16 +31,16 @@ Support teams repeatedly interpret incoming tickets, locate relevant internal gu
 ## Architecture
 
 ```text
-Zendesk ticket created or updated
+HubSpot ticket created or updated
         │ webhook (ngrok only for live local verification)
         ▼
 FastAPI service
-        ├── validates event and fetches ticket details through Zendesk API
+        ├── validates event and fetches ticket details through HubSpot API
         ├── obtains structured LLM analysis
         ├── retrieves relevant PDF chunks from PostgreSQL + pgvector
         ├── applies deterministic policy rules
         ├── persists the decision trace
-        └── posts a private Zendesk agent note
+        └── posts an internal HubSpot note
                   │
                   ▼
           Human agent reviews and sends any public response
@@ -55,13 +55,13 @@ The FastAPI application owns integration, retrieval, decisioning, and audit pers
 - SQLAlchemy and Alembic
 - OpenAI API for embeddings and structured output generation
 - PDF parsing with page-level source metadata
-- Zendesk API and webhooks
+- HubSpot Tickets API, Notes API, and webhooks
 - Docker Compose, pytest, and a synthetic evaluation dataset
-- ngrok for optional live Zendesk webhook verification from a local environment
+- ngrok for optional live HubSpot webhook verification from a local environment
 
 ## Local and GitHub-ready operation
 
-The application, database, PDF ingestion, tests, and evaluation suite will run locally with Python and Docker Compose. Zendesk remains an optional external integration used to verify the live workflow with a trial account; it is not required to run the local services or test the core logic.
+The application, database, PDF ingestion, tests, and evaluation suite run locally with Python and Docker Compose. HubSpot remains an optional external integration used to verify the live workflow with a dedicated developer test account; it is not required to run the local services or test the core logic.
 
 `EXECUTION_MODE=deterministic` uses local heuristics, lexical retrieval, and a template draft without OpenAI calls. `EXECUTION_MODE=ai` uses OpenAI for structured analysis, embeddings, and grounded draft generation. Both modes use the same deterministic routing policy.
 
@@ -73,12 +73,14 @@ The [AI quality workflow](.github/workflows/ai-quality.yml) runs on every push t
 
 Add `OPENAI_API_KEY` as a repository Actions secret before enabling the workflow. It is intentionally not triggered for open pull requests, so API-backed evaluation runs only on trusted `main` code.
 
-The published repository will include synthetic PDFs and ticket fixtures, `.env.example`, Docker setup, migrations, automated tests, an evaluation dataset, and Zendesk configuration instructions. It will not include secrets, customer data, or automatic customer-reply behavior.
+The published repository includes synthetic PDFs and ticket fixtures, `.env.example`, Docker setup, migrations, automated tests, an evaluation dataset, and HubSpot configuration instructions. It does not include secrets, customer data, or automatic customer-reply behavior.
+
+The [HubSpot configuration app](hubspot-app/) is version-controlled alongside the FastAPI service. It requests static private-app authorization and ships with a disabled ticket-created webhook subscription; the temporary tunnel URL and activation remain local deployment steps.
 
 ## Documentation
 
 - [Project brief](docs/project-brief.md)
 - [Architecture and integration boundary](docs/architecture.md)
 - [Decision policy](docs/decision-policy.md)
-- [Local setup and Zendesk verification](docs/setup.md)
+- [Local setup and HubSpot verification](docs/setup.md)
 - [Evaluation plan](docs/evaluation.md)

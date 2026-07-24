@@ -1,0 +1,27 @@
+{
+  "uid": "ai_support_triage_config_app",
+  "type": "app",
+  "config": {
+    "name": "AI Support Triage Configuration",
+    "description": "Private HubSpot configuration for the AI Support Triage & Drafting System portfolio demo.",
+    "distribution": "private",
+    "auth": {
+      "type": "static",
+      "requiredScopes": [
+        "oauth",
+        "tickets",
+        "crm.objects.contacts.write"
+      ],
+      "optionalScopes": [],
+      "conditionallyRequiredScopes": []
+    },
+    "permittedUrls": {
+      "fetch": [
+        "https://api.hubapi.com"
+      ],
+      "iframe": [],
+      "img": []
+    },
+    "support": {}
+  }
+}

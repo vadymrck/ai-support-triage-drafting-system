@@ -15,11 +15,10 @@ class Settings(BaseSettings):
     openai_judge_model: str = "gpt-5.6-terra"
     openai_embedding_model: str = "text-embedding-3-small"
     execution_mode: Literal["deterministic", "ai"] = "deterministic"
-    zendesk_subdomain: str | None = None
-    zendesk_email: str | None = None
-    zendesk_api_token: str | None = None
-    zendesk_webhook_signing_secret: str | None = None
-    zendesk_note_sync_enabled: bool = False
+    hubspot_private_app_access_token: str | None = None
+    hubspot_private_app_client_secret: str | None = None
+    hubspot_webhook_base_url: str | None = None
+    hubspot_note_sync_enabled: bool = False
     webhook_max_age_seconds: int = 300
 
 

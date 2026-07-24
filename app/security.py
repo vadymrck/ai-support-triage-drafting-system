@@ -2,18 +2,21 @@ import base64
 import hashlib
 import hmac
 from datetime import UTC, datetime
+from urllib.parse import unquote
 
 from fastapi import HTTPException, status
 
 
-def verify_zendesk_signature(
+def verify_hubspot_signature(
+    method: str,
+    uri: str,
     body: bytes,
     signature: str | None,
     timestamp: str | None,
     secret: str | None,
     max_age_seconds: int,
 ) -> None:
-    """Validate Zendesk's base64(HMAC-SHA256(timestamp + raw_body)) signature."""
+    """Validate HubSpot's v3 base64(HMAC-SHA256) webhook signature."""
     if not secret:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
@@ -21,11 +24,11 @@ def verify_zendesk_signature(
         )
     if not signature or not timestamp:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing Zendesk signature headers"
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing HubSpot signature headers"
         )
     try:
-        signed_at = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
-    except ValueError as error:
+        signed_at = datetime.fromtimestamp(int(timestamp) / 1_000, UTC)
+    except (TypeError, ValueError, OSError) as error:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid signature timestamp"
         ) from error
@@ -33,9 +36,10 @@ def verify_zendesk_signature(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Expired webhook signature"
         )
-    digest = hmac.new(secret.encode(), timestamp.encode() + body, hashlib.sha256).digest()
-    expected = base64.b64encode(digest).decode()
-    if not hmac.compare_digest(expected, signature):
+    source = f"{method.upper()}{unquote(uri)}{body.decode('utf-8')}{timestamp}"
+    expected = hmac.new(secret.encode(), source.encode(), hashlib.sha256).digest()
+    expected_signature = base64.b64encode(expected).decode()
+    if not hmac.compare_digest(expected_signature, signature):
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Zendesk webhook signature"
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid HubSpot webhook signature"
         )

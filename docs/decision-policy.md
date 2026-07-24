@@ -34,7 +34,7 @@ The service identifies the knowledge gap and suggested owner/action. It does not
 
 Use this outcome only when the ticket is non-sensitive, the classification is reliable, and the retrieved PDF passages adequately support an answer. The draft must be grounded in the cited passages and clearly marked as a suggested reply.
 
-The service posts the support package as a private Zendesk note. A human agent must review, edit as needed, and manually send any public response.
+The service posts the support package as an internal HubSpot note. A human agent must review, edit as needed, and manually send any public response.
 
 ## Retrieval-score calibration
 
@@ -44,4 +44,4 @@ The number is not a universal quality grade and is not directly comparable acros
 
 ## Technical exception path
 
-Processing failures such as an unavailable model provider, database error, or Zendesk API failure are operational errors rather than business outcomes. They will be logged and retried or surfaced for investigation; they must never create a public response.
+Processing failures such as an unavailable model provider, database error, or HubSpot API failure are operational errors rather than business outcomes. They will be logged and retried or surfaced for investigation; they must never create a public response.

@@ -1,6 +1,6 @@
 from app.config import Settings
 from app.schemas import Outcome, TicketInput
-from app.services import KnowledgeService, _chunk_text, process_ticket
+from app.services import DraftGenerator, KnowledgeService, _chunk_text, process_ticket
 
 
 class RecordingSession:
@@ -63,3 +63,24 @@ def test_process_ticket_applies_deterministic_escalation_override(monkeypatch) -
 def test_chunk_text_discards_blank_chunks_and_preserves_boundaries() -> None:
     assert _chunk_text("abcdef", max_characters=2) == ["ab", "cd", "ef"]
     assert _chunk_text("   ", max_characters=2) == []
+
+
+def test_heuristic_draft_uses_a_safe_greeting_and_signature() -> None:
+    named_ticket = TicketInput(
+        ticket_id=3,
+        subject="Invoice location",
+        description="Where can I find my invoice?",
+        requester_name="Mike",
+    )
+    unnamed_ticket = TicketInput(
+        ticket_id=4,
+        subject="Invoice location",
+        description="Where can I find my invoice?",
+    )
+
+    named_draft = DraftGenerator._heuristic_draft(named_ticket, [])
+    unnamed_draft = DraftGenerator._heuristic_draft(unnamed_ticket, [])
+
+    assert named_draft.startswith("Hi Mike,")
+    assert unnamed_draft.startswith("Hello,")
+    assert named_draft.endswith("Best,\nSupport Team")

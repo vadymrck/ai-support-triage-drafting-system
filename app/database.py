@@ -1,7 +1,7 @@
 from collections.abc import Generator
 
 from pgvector.sqlalchemy import Vector
-from sqlalchemy import JSON, Integer, String, Text, create_engine, text
+from sqlalchemy import JSON, BigInteger, Integer, String, Text, create_engine, text
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
 
 from app.config import get_settings
@@ -25,7 +25,8 @@ class TicketDecisionRecord(Base):
     __tablename__ = "ticket_decisions"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    ticket_id: Mapped[int] = mapped_column(Integer, index=True)
+    # HubSpot object IDs exceed PostgreSQL's 32-bit INTEGER range.
+    ticket_id: Mapped[int] = mapped_column(BigInteger, index=True)
     source_event_id: Mapped[str | None] = mapped_column(String(255), unique=True, nullable=True)
     outcome: Mapped[str] = mapped_column(String(64), index=True)
     analysis: Mapped[dict] = mapped_column(JSON)
