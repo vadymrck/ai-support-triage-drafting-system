@@ -15,7 +15,9 @@ EvaluationCase = dict[str, Any]
 EvaluationRow = dict[str, Any]
 
 
-def load_cases(dataset: Path, case_ids: list[str] | None, execution_mode: str) -> list[EvaluationCase]:
+def load_cases(
+    dataset: Path, case_ids: list[str] | None, execution_mode: str
+) -> list[EvaluationCase]:
     """Load, validate, select, and profile-filter synthetic evaluation fixtures."""
     all_cases: list[EvaluationCase] = json.loads(dataset.read_text())
     if case_ids:
@@ -27,9 +29,7 @@ def load_cases(dataset: Path, case_ids: list[str] | None, execution_mode: str) -
         all_cases = [case for case in all_cases if case["id"] in requested_ids]
 
     cases = [
-        case
-        for case in all_cases
-        if execution_mode in case.get("modes", ["deterministic", "ai"])
+        case for case in all_cases if execution_mode in case.get("modes", ["deterministic", "ai"])
     ]
     if not cases:
         requested = ", ".join(case_ids) if case_ids else "the dataset"
@@ -74,15 +74,11 @@ def evaluate_case(
         else:
             assessment = judge.assess(ticket, result.citations, result.suggested_reply)
             row["draft_quality_pass"] = passes_draft_quality(assessment)
-            row["draft_quality"] = assessment.model_dump() | {
-                "total_score": assessment.total_score
-            }
+            row["draft_quality"] = assessment.model_dump() | {"total_score": assessment.total_score}
     return row
 
 
-def summarize(
-    rows: list[EvaluationRow], execution_mode: str, judge_drafts: bool
-) -> dict[str, Any]:
+def summarize(rows: list[EvaluationRow], execution_mode: str, judge_drafts: bool) -> dict[str, Any]:
     """Convert individual fixture results into gate metrics and final pass/fail status."""
     total = len(rows)
     outcome_matches = sum(int(row["outcome_match"]) for row in rows)
@@ -95,11 +91,7 @@ def summarize(
     draft_quality_passed = not judge_drafts or (
         judged_draft_count > 0 and draft_quality_matches == judged_draft_count
     )
-    passed = (
-        outcome_matches == total
-        and evidence_matches == total
-        and draft_quality_passed
-    )
+    passed = outcome_matches == total and evidence_matches == total and draft_quality_passed
     return {
         "status": "passed" if passed else "failed",
         "execution_mode": execution_mode,
@@ -108,9 +100,7 @@ def summarize(
         "expected_document_recall": round(evidence_matches / total, 3),
         "judged_draft_count": judged_draft_count,
         "draft_quality_pass_rate": (
-            round(draft_quality_matches / judged_draft_count, 3)
-            if judged_draft_count
-            else None
+            round(draft_quality_matches / judged_draft_count, 3) if judged_draft_count else None
         ),
         "cases": rows,
     }
@@ -134,16 +124,12 @@ def print_report(report: dict[str, Any], as_json: bool, judge_drafts: bool) -> N
     if judge_drafts:
         judged = report["judged_draft_count"]
         passed = sum(
-            int(row["draft_quality_pass"])
-            for row in report["cases"]
-            if "draft_quality_pass" in row
+            int(row["draft_quality_pass"]) for row in report["cases"] if "draft_quality_pass" in row
         )
         print(f"  Draft-quality gate: {passed}/{judged} judged drafts passed.")
     for row in report["cases"]:
         checks_pass = (
-            row["outcome_match"]
-            and row["evidence_match"]
-            and row.get("draft_quality_pass", True)
+            row["outcome_match"] and row["evidence_match"] and row.get("draft_quality_pass", True)
         )
         marker = "PASS" if checks_pass else "FAIL"
         print(

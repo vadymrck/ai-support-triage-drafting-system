@@ -24,13 +24,19 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.post("/v1/tickets/process", response_model=ProcessedTicket, status_code=status.HTTP_201_CREATED)
-def process_local_ticket(ticket: TicketInput, session: Session = Depends(get_session)) -> ProcessedTicket:
+@app.post(
+    "/v1/tickets/process", response_model=ProcessedTicket, status_code=status.HTTP_201_CREATED
+)
+def process_local_ticket(
+    ticket: TicketInput, session: Session = Depends(get_session)
+) -> ProcessedTicket:
     return process_ticket(session, ticket)
 
 
 @app.post("/v1/webhooks/zendesk", status_code=status.HTTP_202_ACCEPTED)
-async def receive_zendesk_webhook(request: Request, session: Session = Depends(get_session)) -> dict[str, str]:
+async def receive_zendesk_webhook(
+    request: Request, session: Session = Depends(get_session)
+) -> dict[str, str]:
     settings = get_settings()
     body = await request.body()
     verify_zendesk_signature(
@@ -42,11 +48,20 @@ async def receive_zendesk_webhook(request: Request, session: Session = Depends(g
     )
     try:
         payload = json.loads(body)
-        ticket_id = int(payload.get("ticket_id") or payload.get("ticket", {}).get("id") or payload.get("data", {}).get("ticket", {}).get("id"))
+        ticket_id = int(
+            payload.get("ticket_id")
+            or payload.get("ticket", {}).get("id")
+            or payload.get("data", {}).get("ticket", {}).get("id")
+        )
     except (AttributeError, TypeError, ValueError, json.JSONDecodeError) as error:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Webhook payload does not contain a ticket ID") from error
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Webhook payload does not contain a ticket ID",
+        ) from error
     event_id = request.headers.get("x-zendesk-webhook-invocation-id")
-    if event_id and session.scalar(select(TicketDecisionRecord).where(TicketDecisionRecord.source_event_id == event_id)):
+    if event_id and session.scalar(
+        select(TicketDecisionRecord).where(TicketDecisionRecord.source_event_id == event_id)
+    ):
         return {"status": "duplicate_ignored"}
     client = ZendeskClient(settings)
     ticket = await client.fetch_ticket(ticket_id, event_id)

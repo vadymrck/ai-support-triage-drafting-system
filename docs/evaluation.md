@@ -59,19 +59,20 @@ Repeat `--case` to run a small subset. Without it, the full regression dataset r
 
 ## Test execution lifecycle
 
-Version-controlled Git hooks run the fast unit suite before every local commit and push. Enable them once after cloning:
+Version-controlled Git hooks run Ruff lint and format checks before every local commit, and the unit suite before every local push. Enable them once after cloning:
 
 ```zsh
 ./scripts/install_git_hooks.sh
 ```
 
-The hooks run `docker compose exec -T api pytest -q` and require the Docker API service to be running.
+The hooks run inside the Docker API service and require it to be running.
 
 The GitHub Actions workflow runs automatically only after a push to `main`, including a merged pull request. It uses a new Docker database for every run and executes this order:
 
-1. `pytest` unit tests.
-2. PDF ingestion in `EXECUTION_MODE=ai`, creating fresh embeddings in pgvector.
-3. The default AI evaluation, including every applicable routing/retrieval fixture and opted-in draft-quality judge check.
+1. Ruff lint and format checks.
+2. `pytest` unit tests.
+3. PDF ingestion in `EXECUTION_MODE=ai`, creating fresh embeddings in pgvector.
+4. The default AI evaluation, including every applicable routing/retrieval fixture and opted-in draft-quality judge check.
 
 The workflow needs the repository Actions secret `OPENAI_API_KEY`. It is also available as a manual GitHub Actions run. A regular push to another branch or an open pull request does not trigger it.
 

@@ -25,17 +25,23 @@ The standard setup uses `gpt-5-mini` for ticket analysis and drafting, and `gpt-
 
 ## GitHub Actions evaluation
 
-`.github/workflows/ai-quality.yml` runs on a push to `main` (including a merged pull request) or through a manual GitHub Actions run. Each run starts a fresh Docker database, runs unit tests first, ingests the repository PDFs with AI embeddings, then runs the default full AI evaluation.
+`.github/workflows/ai-quality.yml` runs on a push to `main` (including a merged pull request) or through a manual GitHub Actions run. Each run starts a fresh Docker database, runs Ruff lint/format checks, runs unit tests, ingests the repository PDFs with AI embeddings, then runs the default full AI evaluation.
 
 Before pushing this project to GitHub, create a repository Actions secret named `OPENAI_API_KEY`. The workflow does not run on open pull requests, keeping API-backed evaluation limited to trusted main-branch code.
 
-Version-controlled Git hooks run the fast unit suite before every local commit and push. Enable them once after cloning:
+Version-controlled Git hooks run Ruff lint and format checks before every local commit, and the unit suite before every local push. Enable them once after cloning:
 
 ```zsh
 ./scripts/install_git_hooks.sh
 ```
 
-The hooks run `docker compose exec -T api pytest -q`, so the Docker API service must be running. You can still run the same command directly whenever you want a fast local check.
+The hooks run inside the Docker API service. You can run the checks directly whenever needed:
+
+```zsh
+docker compose exec -T api ruff check .
+docker compose exec -T api ruff format --check .
+docker compose exec -T api pytest -q
+```
 
 5. Ingest the synthetic PDFs included with the repository:
 

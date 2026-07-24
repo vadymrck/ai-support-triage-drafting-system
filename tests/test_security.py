@@ -13,7 +13,9 @@ def test_accepts_valid_zendesk_signature() -> None:
     body = b'{"ticket_id":123}'
     timestamp = datetime.now(UTC).isoformat().replace("+00:00", "Z")
     secret = "test-secret"
-    signature = base64.b64encode(hmac.new(secret.encode(), timestamp.encode() + body, hashlib.sha256).digest()).decode()
+    signature = base64.b64encode(
+        hmac.new(secret.encode(), timestamp.encode() + body, hashlib.sha256).digest()
+    ).decode()
     verify_zendesk_signature(body, signature, timestamp, secret, 300)
 
 

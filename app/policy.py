@@ -14,7 +14,12 @@ SENSITIVE_MARKERS = {
     "security": ("breach", "security incident", "hacked"),
     "account_compromise": ("account compromised", "unauthorized access"),
     "privacy": ("personal data", "gdpr", "data privacy"),
-    "account_deletion": ("delete my account", "delete our data", "delete my data", "erase our data"),
+    "account_deletion": (
+        "delete my account",
+        "delete our data",
+        "delete my data",
+        "erase our data",
+    ),
     "payment_dispute": ("chargeback", "dispute this charge", "dispute the charge"),
     "legal": ("lawyer", "legal notice", "legal request"),
     "abuse": ("harassment", "threatening"),
@@ -38,7 +43,11 @@ MIN_RETRIEVAL_SCORE = 0.40
 def detect_sensitive_topics(text: str) -> list[str]:
     """Apply deterministic high-precision safety markers before draft generation."""
     normalized = text.lower()
-    return [topic for topic, markers in SENSITIVE_MARKERS.items() if any(marker in normalized for marker in markers)]
+    return [
+        topic
+        for topic, markers in SENSITIVE_MARKERS.items()
+        if any(marker in normalized for marker in markers)
+    ]
 
 
 def has_escalated_sentiment(text: str) -> bool:
@@ -47,7 +56,9 @@ def has_escalated_sentiment(text: str) -> bool:
     return any(marker in normalized for marker in ESCALATED_SENTIMENT_MARKERS)
 
 
-def decide(analysis: TicketAnalysis, citation_count: int, best_retrieval_score: float) -> DecisionResult:
+def decide(
+    analysis: TicketAnalysis, citation_count: int, best_retrieval_score: float
+) -> DecisionResult:
     """Return the final business outcome without delegating routing to an LLM."""
     sensitive = sorted(set(analysis.sensitive_topics) & SENSITIVE_TOPICS)
     if sensitive:

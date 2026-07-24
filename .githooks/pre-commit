@@ -2,5 +2,6 @@
 set -eu
 
 cd "$(git rev-parse --show-toplevel)"
-echo "Running unit tests before commit..."
-docker compose exec -T api pytest -q
+echo "Running Ruff checks before commit..."
+docker compose exec -T api ruff check .
+docker compose exec -T api ruff format --check .

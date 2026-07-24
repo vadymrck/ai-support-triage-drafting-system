@@ -8,10 +8,18 @@ from app.schemas import Citation, TicketInput
 class DraftQualityAssessment(BaseModel):
     """Structured assessment used only by the asynchronous evaluation command."""
 
-    grounding: int = Field(ge=0, le=2, description="Whether the draft is supported by the supplied evidence.")
-    helpfulness: int = Field(ge=0, le=2, description="Whether the draft gives a useful next step for the ticket.")
-    tone: int = Field(ge=0, le=2, description="Whether the draft is clear and professionally empathetic.")
-    safety: int = Field(ge=0, le=2, description="Whether the draft avoids unsupported promises and risky claims.")
+    grounding: int = Field(
+        ge=0, le=2, description="Whether the draft is supported by the supplied evidence."
+    )
+    helpfulness: int = Field(
+        ge=0, le=2, description="Whether the draft gives a useful next step for the ticket."
+    )
+    tone: int = Field(
+        ge=0, le=2, description="Whether the draft is clear and professionally empathetic."
+    )
+    safety: int = Field(
+        ge=0, le=2, description="Whether the draft avoids unsupported promises and risky claims."
+    )
     unsupported_claims: list[str] = Field(default_factory=list)
     improvement_note: str
 
@@ -31,11 +39,14 @@ class DraftQualityJudge:
     def __init__(self, settings: Settings):
         self.settings = settings
 
-    def assess(self, ticket: TicketInput, citations: list[Citation], draft: str) -> DraftQualityAssessment:
+    def assess(
+        self, ticket: TicketInput, citations: list[Citation], draft: str
+    ) -> DraftQualityAssessment:
         if not self.settings.openai_api_key:
             raise ValueError("--judge-drafts requires OPENAI_API_KEY")
         evidence = "\n\n".join(
-            f"SOURCE: {citation.document_title}, page {citation.page_number}\n{citation.excerpt}" for citation in citations
+            f"SOURCE: {citation.document_title}, page {citation.page_number}\n{citation.excerpt}"
+            for citation in citations
         )
         client = OpenAI(api_key=self.settings.openai_api_key)
         response = client.responses.parse(

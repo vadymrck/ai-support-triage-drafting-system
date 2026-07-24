@@ -28,6 +28,11 @@ jobs:
       - name: Start isolated services
         run: docker compose up --build --detach
 
+      - name: Run lint checks
+        run: |
+          docker compose exec -T api ruff check .
+          docker compose exec -T api ruff format --check .
+
       - name: Run unit tests
         run: docker compose exec -T api pytest -q
 

@@ -1,7 +1,7 @@
 from collections.abc import Generator
 
 from pgvector.sqlalchemy import Vector
-from sqlalchemy import JSON, Float, Integer, String, Text, create_engine, text
+from sqlalchemy import JSON, Integer, String, Text, create_engine, text
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
 
 from app.config import get_settings
