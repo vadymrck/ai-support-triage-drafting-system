@@ -75,5 +75,27 @@
     "modes": ["ai"],
     "expected_outcome": "draft_ready",
     "expected_document": "SSO Access Guide.pdf"
+  },
+  {
+    "id": "possible-account-compromise",
+    "ticket": {
+      "ticket_id": 1008,
+      "subject": "Possible unauthorized access to our account",
+      "description": "We noticed unfamiliar activity and believe our account may be compromised. Please secure it immediately."
+    },
+    "modes": ["deterministic", "ai"],
+    "expected_outcome": "review_required",
+    "expected_document": null
+  },
+  {
+    "id": "legal-notice-review",
+    "ticket": {
+      "ticket_id": 1009,
+      "subject": "Formal legal notice",
+      "description": "Our lawyer will send a legal notice concerning this matter. Please provide the appropriate contact."
+    },
+    "modes": ["deterministic", "ai"],
+    "expected_outcome": "review_required",
+    "expected_document": null
   }
 ]

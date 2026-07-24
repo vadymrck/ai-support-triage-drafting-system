@@ -12,6 +12,8 @@ The project evaluates the actual workflow rather than relying on a visually conv
 - a safe, grounded billing/invoice request
 - a privacy deletion request requiring review
 - a payment dispute requiring review
+- a possible account-compromise report requiring review
+- a legal notice requiring review
 - a valid request missing from the knowledge base
 
 Each case defines an expected business outcome and, where applicable, the expected PDF document.
