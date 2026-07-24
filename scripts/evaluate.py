@@ -136,6 +136,19 @@ def print_report(report: dict[str, Any], as_json: bool, judge_drafts: bool) -> N
             f"  {marker}  {row['id']} -> {row['actual_outcome']} "
             f"(expected {row['expected_outcome']})"
         )
+        if row.get("draft_quality_pass") is False and row.get("draft_quality"):
+            quality = row["draft_quality"]
+            print(
+                "        Draft quality: "
+                f"grounding={quality['grounding']}, "
+                f"helpfulness={quality['helpfulness']}, "
+                f"tone={quality['tone']}, "
+                f"safety={quality['safety']}, "
+                f"total={quality['total_score']}/8"
+            )
+            if quality["unsupported_claims"]:
+                print("        Unsupported claims: " + "; ".join(quality["unsupported_claims"]))
+            print(f"        Improvement: {quality['improvement_note']}")
         if row.get("draft_quality_error"):
             print(f"        Draft quality: {row['draft_quality_error']}")
 
