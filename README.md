@@ -73,7 +73,7 @@ The [AI quality workflow](.github/workflows/ai-quality.yml) runs on every push t
 
 Add `OPENAI_API_KEY` as a repository Actions secret before enabling the workflow. It is intentionally not triggered for open pull requests, so API-backed evaluation runs only on trusted `main` code.
 
-The published repository includes synthetic PDFs and ticket fixtures, `.env.example`, Docker setup, migrations, automated tests, an evaluation dataset, and HubSpot configuration instructions. It does not include secrets, customer data, or automatic customer-reply behavior.
+The published repository includes synthetic PDFs and ticket fixtures, `.env.example`, Docker setup, database schema initialization, automated tests, an evaluation dataset, and HubSpot configuration instructions. It does not include secrets, customer data, or automatic customer-reply behavior.
 
 The [HubSpot configuration app](hubspot-app/) is version-controlled alongside the FastAPI service. It requests static private-app authorization and ships with a disabled ticket-created webhook subscription; the temporary tunnel URL and activation remain local deployment steps.
 
