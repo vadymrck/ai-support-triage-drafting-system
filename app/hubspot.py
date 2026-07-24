@@ -95,16 +95,16 @@ class HubSpotClient:
                 )
                 if response.status_code != 404 or attempt == 2:
                     response.raise_for_status()
-                    break
+                    properties = response.json().get("properties", {})
+                    return TicketInput(
+                        ticket_id=ticket_id,
+                        subject=properties.get("subject") or "(no subject)",
+                        description=properties.get("content") or "(no description)",
+                        priority=properties.get("hs_ticket_priority"),
+                        source_event_id=source_event_id,
+                    )
                 await asyncio.sleep(2**attempt)
-        properties = response.json().get("properties", {})
-        return TicketInput(
-            ticket_id=ticket_id,
-            subject=properties.get("subject") or "(no subject)",
-            description=properties.get("content") or "(no description)",
-            priority=properties.get("hs_ticket_priority"),
-            source_event_id=source_event_id,
-        )
+        raise RuntimeError("HubSpot ticket retrieval retry loop exited unexpectedly")
 
     async def add_internal_note(self, ticket_id: int, note: str) -> None:
         payload = {

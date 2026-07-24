@@ -77,7 +77,7 @@ async def receive_hubspot_webhook(
         if isinstance(payload, list)
         else []
     )
-    logger.warning(
+    logger.info(
         "HubSpot webhook received: subscriptions=%s parsed_events=%s",
         subscription_types,
         len(events),
@@ -87,7 +87,7 @@ async def receive_hubspot_webhook(
 
     client = HubSpotClient(settings)
     for event in events:
-        logger.warning(
+        logger.info(
             "HubSpot event queued: ticket_id=%s event_id=%s", event.ticket_id, event.event_id
         )
         background_tasks.add_task(
@@ -100,7 +100,7 @@ async def process_hubspot_event(
     ticket_id: int, event_id: str, client: HubSpotClient, settings: Settings
 ) -> None:
     try:
-        logger.warning(
+        logger.info(
             "HubSpot event processing started: ticket_id=%s event_id=%s", ticket_id, event_id
         )
         with SessionLocal() as session:
@@ -114,7 +114,7 @@ async def process_hubspot_event(
                 await client.add_internal_note(
                     ticket.ticket_id, format_hubspot_internal_note(result)
                 )
-        logger.warning("HubSpot event processing completed: ticket_id=%s", ticket_id)
+        logger.info("HubSpot event processing completed: ticket_id=%s", ticket_id)
     except Exception:
         logger.exception(
             "HubSpot event processing failed: ticket_id=%s event_id=%s", ticket_id, event_id
