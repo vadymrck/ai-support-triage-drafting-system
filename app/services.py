@@ -27,7 +27,6 @@ class TicketAnalyzer:
             client = OpenAI(api_key=self.settings.openai_api_key)
             completion = client.beta.chat.completions.parse(
                 model=self.settings.openai_model,
-                temperature=0,
                 messages=[
                     {
                         "role": "system",
@@ -158,7 +157,6 @@ class DraftGenerator:
             client = OpenAI(api_key=self.settings.openai_api_key)
             completion = client.chat.completions.create(
                 model=self.settings.openai_model,
-                temperature=0,
                 messages=[
                     {
                         "role": "system",
