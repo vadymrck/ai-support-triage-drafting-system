@@ -48,6 +48,28 @@ FastAPI service
 
 The FastAPI application owns integration, retrieval, decisioning, and audit persistence. The LLM reports validated observations; it does not determine the final outcome. A pure Python policy module makes the final routing decision and can be tested independently.
 
+## Demo evidence
+
+### Live HubSpot workflow
+
+A synthetic customer email creates a HubSpot ticket. The integration adds a structured internal triage note with the outcome, summary, and next step; it never sends a public reply.
+
+![Synthetic HubSpot email ticket with an AI triage note showing a draft-ready outcome and internal summary](docs/assets/hubspot-live-ticket-and-triage.png)
+
+The note shows the PDF pages used as evidence and a suggested response that an agent must review and edit before manually sending.
+
+![HubSpot internal triage note showing retrieved SSO guide pages, a reviewable suggested reply, and confirmation that no customer message was sent](docs/assets/hubspot-grounded-draft-review.png)
+
+### Evaluation and quality gates
+
+The committed GitHub Actions workflow validates the AI pipeline end to end: unit tests, AI PDF embeddings, routing and retrieval checks, and LLM-as-a-judge draft-quality scoring.
+
+![GitHub Actions AI quality evaluation passing all nine routing and expected-document checks and all three judged drafts](docs/assets/github-actions-ai-quality-gate.png)
+
+The deterministic profile provides a no-call local regression check against the version-controlled synthetic ticket fixtures.
+
+![VS Code view of synthetic support-ticket fixtures and terminal output showing all eight deterministic evaluation cases passing](docs/assets/local-deterministic-evaluation.png)
+
 ## Stack
 
 - Python 3.12, FastAPI, Pydantic v2

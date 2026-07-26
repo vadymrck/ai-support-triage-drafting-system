@@ -120,7 +120,10 @@ class KnowledgeService:
         if query_embedding:
             distance = KnowledgeChunk.embedding.cosine_distance(query_embedding)
             rows = session.execute(
-                select(KnowledgeChunk, distance.label("distance")).order_by(distance).limit(limit)
+                select(KnowledgeChunk, distance.label("distance"))
+                .where(KnowledgeChunk.embedding.is_not(None))
+                .order_by(distance)
+                .limit(limit)
             ).all()
             return [
                 Citation(
