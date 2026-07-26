@@ -50,6 +50,8 @@ The FastAPI application owns integration, retrieval, decisioning, and audit pers
 
 ## Demo evidence
 
+▶️ [Watch the live video walkthrough on YouTube](https://youtu.be/9anpdUhmeD0)
+
 ### Live HubSpot workflow
 
 A synthetic customer email creates a HubSpot ticket. The integration adds a structured internal triage note with the outcome, summary, and next step; it never sends a public reply.
